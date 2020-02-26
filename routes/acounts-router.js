@@ -32,7 +32,7 @@ router.get('/:id', async (req, res, next) => {
     if (account) {
       res.status(200).json(account);
     } else {
-      res.status(404).json({ message: 'account with ID was not found' });
+      res.status(404).json({ message: 'the specific ID was not found' });
     }
   } catch (err) {
     next(err);
@@ -61,6 +61,33 @@ router.post('/', validateAccountData(), async (req, res, next) => {
       .where({ id: id })
       .select('*');
     res.status(201).json(addedAccount);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put('/:id', validateAccountData(), async (req, res, next) => {
+  const { id } = req.params;
+  const { name, budget } = req.params;
+
+  const updateAccount = {
+    name: name,
+    budget: budget,
+  };
+  try {
+    await db('accounts')
+      .where({ id: id })
+      .update(updateAccount);
+    const newAccount = await db('accounts')
+      .where({ id: id })
+      .select('*');
+    if (newAccount) {
+      res.status(200).json(newAccount);
+    } else {
+      res
+        .status(404)
+        .json({ message: 'Could not find specific ID for account' });
+    }
   } catch (err) {
     next(err);
   }
