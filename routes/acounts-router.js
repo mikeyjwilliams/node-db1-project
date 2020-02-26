@@ -103,6 +103,7 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 
 /**
  * DELETE /api/projects/:id
+ * ?
  */
 router.delete('/:id', async (req, res, next) => {
 	const { id } = req.params;
@@ -111,7 +112,7 @@ router.delete('/:id', async (req, res, next) => {
 			.where({ id: id })
 			.del();
 		if (rowsDel) {
-			res.status(204).json(rowsDel);
+			res.status(204).end();
 		} else {
 			res.status(400).json({ message: 'ID not found to delete' });
 		}
