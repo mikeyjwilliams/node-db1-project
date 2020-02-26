@@ -32,7 +32,7 @@ router.get('/:id', async (req, res, next) => {
 		if (account) {
 			res.status(200).json(account);
 		} else {
-			res.status(404).json({ message: 'the specific ID was not found' });
+			res.status(400).json({ message: 'the specific ID was not found' });
 		}
 	} catch (err) {
 		next(err);
@@ -94,7 +94,7 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 		if (newAccount) {
 			res.status(200).json(newAccount);
 		} else {
-			res.status(404).json({ message: 'Could not find specific ID to update' });
+			res.status(400).json({ message: 'Could not find specific ID to update' });
 		}
 	} catch (err) {
 		next(err);
@@ -104,7 +104,7 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 /**
  * DELETE /api/projects/:id
  */
-router.delete(':id', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const rowsDel = await db('accounts')
@@ -112,11 +112,11 @@ router.delete(':id', async (req, res, next) => {
 			.del();
 		if (rowsDel) {
 			res.status(204).json(rowsDel);
-		}
-		{
-			res.status(404).json({ message: 'ID not found to delete' });
+		} else {
+			res.status(400).json({ message: 'ID not found to delete' });
 		}
 	} catch (err) {
+		console.log(err);
 		next(err);
 	}
 });
