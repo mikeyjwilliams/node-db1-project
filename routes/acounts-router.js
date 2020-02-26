@@ -59,7 +59,8 @@ router.post('/', validateAccountData(), async (req, res, next) => {
 		const [id] = await db('accounts').insert(accountPayload);
 		const addedAccount = await db('accounts')
 			.where({ id: id })
-			.select('*');
+			.select('*')
+			.first();
 		res.status(201).json(addedAccount);
 	} catch (err) {
 		next(err);
@@ -103,7 +104,6 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 
 /**
  * DELETE /api/projects/:id
- * ?
  */
 router.delete('/:id', async (req, res, next) => {
 	const { id } = req.params;
