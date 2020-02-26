@@ -8,12 +8,12 @@ const validateAccountData = require('../middleware/validatePostAccountData');
  * Description: Selects all accounts in `accounts` in  database.
  */
 router.get('/', async (req, res, next) => {
-  try {
-    const accounts = await db('accounts').select('*');
-    res.status(200).json(accounts);
-  } catch (err) {
-    next(err);
-  }
+	try {
+		const accounts = await db('accounts').select('*');
+		res.status(200).json(accounts);
+	} catch (err) {
+		next(err);
+	}
 });
 
 /**
@@ -23,20 +23,20 @@ router.get('/', async (req, res, next) => {
  * else returns `account` info.
  */
 router.get('/:id', async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const account = await db('accounts')
-      .where({ id: id })
-      .select('*')
-      .first();
-    if (account) {
-      res.status(200).json(account);
-    } else {
-      res.status(404).json({ message: 'the specific ID was not found' });
-    }
-  } catch (err) {
-    next(err);
-  }
+	const { id } = req.params;
+	try {
+		const account = await db('accounts')
+			.where({ id: id })
+			.select('*')
+			.first();
+		if (account) {
+			res.status(200).json(account);
+		} else {
+			res.status(404).json({ message: 'the specific ID was not found' });
+		}
+	} catch (err) {
+		next(err);
+	}
 });
 
 /**
@@ -49,48 +49,58 @@ router.get('/:id', async (req, res, next) => {
  * returning the newly inserted data back w/ a status 201.
  */
 router.post('/', validateAccountData(), async (req, res, next) => {
-  const { name, budget } = req.body;
+	const { name, budget } = req.body;
 
-  const accountPayload = {
-    name: name,
-    budget: budget,
-  };
-  try {
-    const [id] = await db('accounts').insert(accountPayload);
-    const addedAccount = await db('accounts')
-      .where({ id: id })
-      .select('*');
-    res.status(201).json(addedAccount);
-  } catch (err) {
-    next(err);
-  }
+	const accountPayload = {
+		name: name,
+		budget: budget
+	};
+	try {
+		const [id] = await db('accounts').insert(accountPayload);
+		const addedAccount = await db('accounts')
+			.where({ id: id })
+			.select('*');
+		res.status(201).json(addedAccount);
+	} catch (err) {
+		next(err);
+	}
 });
 
+/**
+ * PUT /api/accounts
+ * Middleware: validateAccountData()
+ * Description: destructure id from req.params
+ * destructure name, budget from req.body
+ * update where id in accounts with whitelisted body items
+ * then grab from accounts where id first object all items
+ * check if has id 404 not else returns data.
+ */
 router.put('/:id', validateAccountData(), async (req, res, next) => {
-  const { id } = req.params;
-  const { name, budget } = req.body;
+	const { id } = req.params;
+	const { name, budget } = req.body;
 
-  const updateAccount = {
-    name: name,
-    budget: budget,
-  };
-  try {
-    await db('accounts')
-      .where({ id: id })
-      .update(updateAccount);
-    const newAccount = await db('accounts')
-      .where({ id: id })
-      .select('*');
-    if (newAccount) {
-      res.status(200).json(newAccount);
-    } else {
-      res
-        .status(404)
-        .json({ message: 'Could not find specific ID for account' });
-    }
-  } catch (err) {
-    next(err);
-  }
+	const updateAccount = {
+		name: name,
+		budget: budget
+	};
+	try {
+		await db('accounts')
+			.where({ id: id })
+			.update(updateAccount);
+		const newAccount = await db('accounts')
+			.where({ id: id })
+			.select('*')
+			.first();
+		if (newAccount) {
+			res.status(200).json(newAccount);
+		} else {
+			res
+				.status(404)
+				.json({ message: 'Could not find specific ID for account' });
+		}
+	} catch (err) {
+		next(err);
+	}
 });
 
 module.exports = router;
