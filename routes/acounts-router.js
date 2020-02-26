@@ -68,7 +68,7 @@ router.post('/', validateAccountData(), async (req, res, next) => {
 
 router.put('/:id', validateAccountData(), async (req, res, next) => {
   const { id } = req.params;
-  const { name, budget } = req.params;
+  const { name, budget } = req.body;
 
   const updateAccount = {
     name: name,
