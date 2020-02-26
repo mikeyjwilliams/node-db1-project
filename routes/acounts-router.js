@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../data/dbConfig');
 const router = express.Router();
+const validateAccountData = require('../middleware/validatePostAccountData');
 
 router.get('/', async (req, res, next) => {
   try {
@@ -28,14 +29,9 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', validateAccountData(), async (req, res, next) => {
   const { name, budget } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: 'name of account is required.' });
-  }
-  if (!budget) {
-    return res.status(400).json({ message: 'budget of account is required.' });
-  }
+
   const accountPayload = {
     name: name,
     budget: budget,
