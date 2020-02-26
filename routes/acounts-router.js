@@ -68,7 +68,7 @@ router.post('/', validateAccountData(), async (req, res, next) => {
 
 /**
  * PUT /api/accounts
- * Middleware: validateAccountData()
+ * ?? Middleware: validateAccountData()
  * Description: destructure id from req.params
  * destructure name, budget from req.body
  * update where id in accounts with whitelisted body items
@@ -96,11 +96,28 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 		} else {
 			res
 				.status(404)
-				.json({ message: 'Could not find specific ID for account' });
+				.json({ message: 'Could not find specific ID to update' });
 		}
 	} catch (err) {
 		next(err);
 	}
 });
+
+/**
+ * DELETE /api/projects/:id 
+ */
+router.delete(':id', (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const rowsDel = await db('accounts').where({id: id}).del();
+    if(rowsDel) {
+      res.status(204).json(rowsDel);
+    } {
+      res.status(404).json({message: 'ID not found to delete'})
+    }
+  } catch(err) {
+    next(err);
+  }
+})
 
 module.exports = router;
