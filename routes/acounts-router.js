@@ -94,9 +94,7 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 		if (newAccount) {
 			res.status(200).json(newAccount);
 		} else {
-			res
-				.status(404)
-				.json({ message: 'Could not find specific ID to update' });
+			res.status(404).json({ message: 'Could not find specific ID to update' });
 		}
 	} catch (err) {
 		next(err);
@@ -104,20 +102,23 @@ router.put('/:id', validateAccountData(), async (req, res, next) => {
 });
 
 /**
- * DELETE /api/projects/:id 
+ * DELETE /api/projects/:id
  */
-router.delete(':id', (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const rowsDel = await db('accounts').where({id: id}).del();
-    if(rowsDel) {
-      res.status(204).json(rowsDel);
-    } {
-      res.status(404).json({message: 'ID not found to delete'})
-    }
-  } catch(err) {
-    next(err);
-  }
-})
+router.delete(':id', async (req, res, next) => {
+	const { id } = req.params;
+	try {
+		const rowsDel = await db('accounts')
+			.where({ id: id })
+			.del();
+		if (rowsDel) {
+			res.status(204).json(rowsDel);
+		}
+		{
+			res.status(404).json({ message: 'ID not found to delete' });
+		}
+	} catch (err) {
+		next(err);
+	}
+});
 
 module.exports = router;
