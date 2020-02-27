@@ -8,10 +8,39 @@ const validateAccountData = require('../middleware/validatePostAccountData');
  * Description: Selects all accounts in `accounts` in  database.
  */
 router.get('/', async (req, res, next) => {
+  let limitNum = []; // SQL number limit to use, above so is alive before if statement happens.
+  let accounts; // inside try/catch -> in if statements checking see which db call to use.
+  let numbers;
+  let limit = +req.query.limit;
+  console.log(limit);
+  if (limit !== undefined) {
+    limit = limit;
+  }
+
+  // const sortBy = req.query.sortby;
+  // const sortDir = req.query.sortdir;
+
+  // const query = {
+  //   limit: limitNum,
+  //   sortby: sortby,
+  //   sortdir: sortdir,
+  // };
+
+  // limit === undefined && sortby === undefined && sortdir === undefined;
+
   try {
-    const accounts = await db('accounts').select('*');
+    if (limit !== undefined) {
+      console.log(typeof limit, 'limit', limit);
+      accounts = await db('accounts')
+        .select('*')
+        .limit(limit);
+    } else {
+      console.log('check');
+      accounts = await db('accounts').select('*');
+    }
     res.status(200).json(accounts);
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });
