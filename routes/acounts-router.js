@@ -9,7 +9,6 @@ const validateAccountData = require('../middleware/validatePostAccountData');
  */
 router.get('/', async (req, res, next) => {
   let accounts; // inside try/catch -> in if statements checking see which db call to use.
-  let numbers;
   let limit = Number(req.query.limit);
 
   try {
