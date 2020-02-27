@@ -10,14 +10,14 @@ const validateAccountData = require('../middleware/validatePostAccountData');
 router.get('/', async (req, res, next) => {
   let accounts; // inside try/catch -> in if statements checking see which db call to use.
   let limit = Number(req.query.limit);
+  let sortby = req.query.sortby;
 
   try {
     if (limit !== undefined || limit !== NaN) {
-      console.log('check');
-      console.log(limit, ' ', typeof limit, ' limit name');
       accounts = await db('accounts')
         .select('*')
         .limit(limit);
+    } else if (limit !== undefined || (limit !== NAN && sortby !== undefined)) {
     } else {
       accounts = await db('accounts').select('*');
     }
