@@ -5,37 +5,25 @@ const validateAccountData = require('../middleware/validatePostAccountData');
 
 /**
  * GET: /api/accounts
- * Description: Selects all accounts in `accounts` in  database.
+ * Description: Selects all accounts in `accounts`  database.
  */
 router.get('/', async (req, res, next) => {
-  let limitNum = []; // SQL number limit to use, above so is alive before if statement happens.
   let accounts; // inside try/catch -> in if statements checking see which db call to use.
   let numbers;
-  let limit = +req.query.limit;
-  console.log(limit);
-  if (limit !== undefined) {
+  let limit = Number(req.query.limit);
+
+  if (limit !== undefined || limit !== NAN) {
     limit = limit;
   }
 
-  // const sortBy = req.query.sortby;
-  // const sortDir = req.query.sortdir;
-
-  // const query = {
-  //   limit: limitNum,
-  //   sortby: sortby,
-  //   sortdir: sortdir,
-  // };
-
-  // limit === undefined && sortby === undefined && sortdir === undefined;
-
   try {
-    if (limit !== undefined) {
-      console.log(typeof limit, 'limit', limit);
+    if (limit !== undefined || limit !== NaN) {
+      console.log('check');
+      console.log(limit, ' ', typeof limit, ' limit name');
       accounts = await db('accounts')
         .select('*')
         .limit(limit);
     } else {
-      console.log('check');
       accounts = await db('accounts').select('*');
     }
     res.status(200).json(accounts);
@@ -44,6 +32,8 @@ router.get('/', async (req, res, next) => {
     next(err);
   }
 });
+
+// limit === undefined && sortby === undefined && sortdir === undefined;
 
 /**
  * GET: /api/accounts/:id
