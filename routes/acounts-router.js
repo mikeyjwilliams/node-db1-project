@@ -12,10 +12,6 @@ router.get('/', async (req, res, next) => {
   let numbers;
   let limit = Number(req.query.limit);
 
-  if (limit !== undefined || limit !== NAN) {
-    limit = limit;
-  }
-
   try {
     if (limit !== undefined || limit !== NaN) {
       console.log('check');
